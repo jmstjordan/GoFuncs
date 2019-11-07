@@ -1,0 +1,63 @@
+swagger: '2.0'
+info:
+  title: Cloud Endpoints + GCF
+  description: Golang Clocking API on Cloud Endpoints with a Google Cloud Functions backend
+  version: 1.0.0
+host: gecko-proxy-svc-d7ywni6h3q-uc.a.run.app
+schemes:
+  - https
+produces:
+  - application/json
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://securetoken.google.com/gecko-time"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "gecko-time"
+security:
+  - firebase: []
+paths:
+  /users/{user}:
+    get:
+      summary: Retrieve information about a user
+      operationId: getUser
+      parameters:
+        - in: path
+          name: user
+          required: true
+          type: string
+      x-google-backend:
+        address: https://us-central1-gecko-time.cloudfunctions.net/GetUser
+      responses:
+        '200':
+          description: A successful user retrieval
+          schema:
+            type: object
+  /clock:
+    post:
+      summary: Clock in or out to the system
+      operationId: clockTime
+      parameters:
+        - in: body
+          name: clockTime
+          schema:
+            type: object
+            properties:
+              UserId:
+                type: string
+              ClockType:    
+                type: string
+            required:
+              - UserId
+              - ClockType
+      x-google-backend:
+        address: https://us-central1-gecko-time.cloudfunctions.net/ClockTime
+      responses:
+        '201':
+          description: A successful clock in or out
+        '400':
+          description: Bad Request.
+        '405':
+          description: Method not allowed.
