@@ -1,4 +1,4 @@
-## Exploring Go Cloud Functions and an ESP Proxy
+## Exploring Go Cloud Functions and an Authentication Proxy
 
 ### Introduction
 
